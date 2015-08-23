@@ -1,6 +1,6 @@
 {
     "name": "tacoberu/php-json",
-    "description": "De/Serialize object from/to JSON string, similar as json_encode()/json_decode().",
+    "description": "De/Serialization object from/to JSON string, similar as json_encode()/json_decode().",
     "type": "library",
     "require": {
     	"php" : ">=5.3.0"
