@@ -15,10 +15,13 @@
 namespace Taco\JSON;
 
 
+use DateTime;
+
+
 /**
  * Format for DateTime.
  */
-class DateTimeFormat implements Serializer
+class DateTimeFormat implements Serializer, Deserializer
 {
 
 	/**
@@ -31,5 +34,19 @@ class DateTimeFormat implements Serializer
 	{
 		return $encoder->makeDefinition('DateTime', $value->format('c'));
 	}
+
+
+
+	/**
+	 * Returns the literal representation of a value.
+	 *
+	 * @param literal $literal
+	 * @return mixin
+	 */
+	function decode(Decoder $decoder, $literal)
+	{
+		return new DateTime($literal);
+	}
+
 
 }

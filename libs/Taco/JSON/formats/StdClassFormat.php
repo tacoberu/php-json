@@ -18,7 +18,7 @@ namespace Taco\JSON;
 /**
  * Format struct/stdClass.
  */
-class StdClassFormat implements Serializer
+class StdClassFormat implements Serializer, Deserializer
 {
 
 	/**
@@ -34,6 +34,22 @@ class StdClassFormat implements Serializer
 			$value[$k] = $encoder->toLiteral($val);
 		}
 		return (object)$value;
+	}
+
+
+	/**
+	 * Returns the literal representation of a value.
+	 *
+	 * @param literal $literal
+	 * @return mixin
+	 */
+	function decode(Decoder $decoder, $literal)
+	{
+		$literal = (array)$literal;
+		foreach ($literal as $k => $val) {
+			$literal[$k] = $decoder->fromLiteral($val);
+		}
+		return (object)$literal;
 	}
 
 }

@@ -44,6 +44,6 @@ interface Deserializer
 	 * @param literal $literal
 	 * @return mixin
 	 */
-	function decode(Decoder $encoder, $literal);
+	function decode(Decoder $decoder, $literal);
 
 }

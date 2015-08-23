@@ -15,9 +15,6 @@
 namespace Taco\JSON;
 
 
-
-use Nette\Utils,
-	Nette\Reflection;
 use RuntimeException,
 	LogicException,
 	Traversable;

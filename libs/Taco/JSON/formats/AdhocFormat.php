@@ -18,7 +18,7 @@ namespace Taco\JSON;
 /**
  * Format by callback.
  */
-class AdhocFormat implements Serializer
+class AdhocFormat implements Serializer, Deserializer
 {
 
 	private $encode, $decode;
@@ -45,6 +45,20 @@ class AdhocFormat implements Serializer
 	{
 		$l = $this->encode;
 		return $l($encoder, $value);
+	}
+
+
+
+	/**
+	 * Returns the literal representation of a value.
+	 *
+	 * @param literal $literal
+	 * @return mixin
+	 */
+	function decode(Decoder $decoder, $literal)
+	{
+		$l = $this->decode;
+		return $l($decoder, $literal);
 	}
 
 }
