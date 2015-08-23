@@ -17,6 +17,7 @@ namespace Taco\JSON;
 
 require_once __dir__ . '/../../../vendor/autoload.php';
 require_once __dir__ . '/Person.php';
+require_once __dir__ . '/SampleBankByArrayAccess.php';
 
 
 use PHPUnit_Framework_TestCase;
@@ -147,5 +148,40 @@ class EncoderTest extends PHPUnit_Framework_TestCase
 						'editor' => new Person('Nicholas', 'Flamel', 412)
 						]));
 	}
+
+
+
+	function testArrayAccessBank()
+	{
+		$bank = new SampleBankByArrayAccess([
+				'DateTime' => new DateTimeFormat()
+				]);
+		$encoder = new Encoder($bank);
+		$this->assertSame('{"#t":"DateTime","#v":"2015-08-23T13:46:37+02:00"}', $encoder->encode(new DateTime("2015-08-23T13:46:37+02:00") /*, JSON_PRETTY_PRINT*/));
+	}
+
+
+
+	function testMatchInSeccondBank()
+	{
+		$bank = new SampleBankByArrayAccess([
+				'DateTime' => new DateTimeFormat()
+				]);
+		$encoder = new Encoder($bank);
+		$map = [];
+		$map['Taco.JSON.Person'] = new AdhocFormat(function(Encoder $encoder, $value) {
+			$data = (object) [
+					'name' => $value->name,
+					'surname' => $value->surname,
+					];
+			if (! empty($value->age)) {
+				$data->age = $value->age;
+			}
+			return $encoder->makeDefinition('Taco.JSON.Person', $data);
+		});
+		$encoder->add($map);
+		$this->assertSame('{"#t":"Taco.JSON.Person","#v":{"name":"John","surname":"Dee"}}', $encoder->encode(new Person('John', 'Dee')));
+	}
+
 
 }

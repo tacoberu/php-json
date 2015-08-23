@@ -17,6 +17,7 @@ namespace Taco\JSON;
 
 use RuntimeException,
 	LogicException,
+	ArrayAccess,
 	Traversable;
 
 
@@ -29,13 +30,36 @@ class Encoder
 	private $serializer = [];
 
 
-	function __construct($serializer)
+	/**
+	 * @param $dict List of Serializer by key as type name if format ns.ns.ns.class.
+	 */
+	function __construct($dict)
 	{
-		$this->serializer = array_merge([
+		if (!is_array($dict) && ! $dict instanceof ArrayAccess) {
+			throw new LogicException("Serializer dict must by array or ArrayAccess.");
+		}
+		$this->serializer[] = $dict;
+		$this->serializer[] = [
 				'stdClass' => new StdClassFormat(),
 				//~ 'array' => new ArrayFormat(),
 				//~ 'scalar' => new ScalarFormat(),
-				], $serializer);
+				];
+	}
+
+
+
+	/**
+	 * @param $dict List of Serializer by key as type name if format ns.ns.ns.class.
+	 */
+	function add($dict)
+	{
+		if (!is_array($dict) && ! $dict instanceof ArrayAccess) {
+			throw new LogicException("Serializer dict must by array or ArrayAccess.");
+		}
+		$default = array_pop($this->serializer);
+		$this->serializer[] = $dict;
+		$this->serializer[] = $default;
+		return $this;
 	}
 
 
@@ -55,6 +79,11 @@ class Encoder
 
 
 
+	/**
+	 * @param string $type
+	 * @param literal $value
+	 * @return stdClass
+	 */
 	function makeDefinition($type, $value)
 	{
 		return (object) [
@@ -93,13 +122,21 @@ class Encoder
 	private function lookupSerializerFor($value)
 	{
 		$type = strtr(get_class($value), '\\', '.');
-		if (! isset($this->serializer[$type])) {
+		foreach ($this->serializer as $dict) {
+			if (isset($dict[$type])) {
+				$serializer = $dict[$type];
+				break;
+			}
+		}
+
+		if (! isset($serializer)) {
 			throw new RuntimeException("Serializer for type: `$type' is not found.");
 		}
-		$serializer = $this->serializer[$type];
+
 		if (! $serializer instanceof Serializer) {
 			throw new LogicException("Serializer for type: `$type' is not implemented of interface Serializer.");
 		}
+
 		return $serializer;
 	}
 

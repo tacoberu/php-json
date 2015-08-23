@@ -116,4 +116,33 @@ class DecoderTest extends PHPUnit_Framework_TestCase
 	}
 
 
+	function testArrayAccessBank()
+	{
+		$bank = new SampleBankByArrayAccess([
+				'DateTime' => new DateTimeFormat()
+				]);
+		$decoder = new Decoder($bank);
+		$this->assertEquals(new DateTime("2015-08-23T13:46:37+02:00"), $decoder->decode('{"#t":"DateTime","#v":"2015-08-23T13:46:37+02:00"}'));
+	}
+
+
+
+	function testMatchInSeccondBank()
+	{
+		$bank = new SampleBankByArrayAccess([
+				'DateTime' => new DateTimeFormat()
+				]);
+		$decoder = new Decoder($bank);
+		$map = [];
+		$map['Taco.JSON.Person'] = new AdhocFormat(Null, function(Decoder $decoder, $literal) {
+			if (isset($literal->age)) {
+				return new Person($literal->name, $literal->surname, $literal->age);
+			}
+			return new Person($literal->name, $literal->surname);
+		});
+		$decoder->add($map);
+		$this->assertEquals(new Person('John', 'Dee'), $decoder->decode('{"#t":"Taco.JSON.Person","#v":{"name":"John","surname":"Dee"}}'));
+	}
+
+
 }

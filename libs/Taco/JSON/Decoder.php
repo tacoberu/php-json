@@ -15,12 +15,9 @@
 namespace Taco\JSON;
 
 
-
-use Nette\Utils,
-	Nette\Reflection;
 use RuntimeException,
 	LogicException,
-	Traversable;
+	ArrayAccess;
 
 
 /**
@@ -32,13 +29,36 @@ class Decoder
 	private $deserializer = [];
 
 
-	function __construct($deserializer)
+	/**
+	 * @param $dict List of Deserializer by key as type name if format ns.ns.ns.class.
+	 */
+	function __construct($dict)
 	{
-		$this->deserializer = array_merge([
+		if (!is_array($dict) && ! $dict instanceof ArrayAccess) {
+			throw new LogicException("Serializer dict must by array or ArrayAccess.");
+		}
+		$this->deserializer[] = $dict;
+		$this->deserializer[] = [
 				'stdClass' => new StdClassFormat(),
 				//~ 'array' => new ArrayFormat(),
 				//~ 'scalar' => new ScalarFormat(),
-				], $deserializer);
+				];
+	}
+
+
+
+	/**
+	 * @param $dict List of Serializer by key as type name if format ns.ns.ns.class.
+	 */
+	function add($dict)
+	{
+		if (!is_array($dict) && ! $dict instanceof ArrayAccess) {
+			throw new LogicException("Serializer dict must by array or ArrayAccess.");
+		}
+		$default = array_pop($this->deserializer);
+		$this->deserializer[] = $dict;
+		$this->deserializer[] = $default;
+		return $this;
 	}
 
 
@@ -54,16 +74,6 @@ class Decoder
 	function decode($value, $depth = 512, $options = 0)
 	{
 		return $this->fromLiteral(json_decode($value, False, $depth, $options));
-	}
-
-
-
-	function makeDefinition($type, $value)
-	{
-		return (object) [
-				'#t' => $type,
-				'#v' => $value,
-				];
 	}
 
 
@@ -97,14 +107,21 @@ class Decoder
 
 	/**
 	 * @param string Type name of object.
-	 * @return Serializer
+	 * @return Deserializer
 	 */
 	private function lookupDeserializerFor($type)
 	{
-		if (! isset($this->deserializer[$type])) {
+		foreach ($this->deserializer as $dict) {
+			if (isset($dict[$type])) {
+				$deserializer = $dict[$type];
+				break;
+			}
+		}
+
+		if (! isset($deserializer)) {
 			throw new RuntimeException("Deserializer for type: `$type' is not found.");
 		}
-		$deserializer = $this->deserializer[$type];
+
 		if (! $deserializer instanceof Deserializer) {
 			throw new LogicException("Deserializer for type: `$type' is not implemented of interface Deserializer.");
 		}
