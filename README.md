@@ -4,7 +4,7 @@ php-json
 De/Serialization object from/to JSON string, similar as json_encode()/json_decode().
 
 
-## Sample
+## Example use code
 
     $encoder = Taco\JSON\Encode([]);
     echo $encoder->encode([42, 3.15, 'Salut']);
@@ -40,3 +40,23 @@ De/Serialization object from/to JSON string, similar as json_encode()/json_decod
     $decoder = Taco\JSON\Decode($map);
     print_r($decoder->decode($json));
     // [42, 3.15, 'Salut', new DateTime()]
+
+
+## Example JSON code
+
+    [
+        'cislo': 42,
+        'real': 3.1415,
+        'datum': {
+            '#t':'Date',
+            '#v': '2005-08-15T15:52:01+00:00'
+        },
+        'author': {
+            '#t':'Person',
+            '#v': {
+               'name': 'John',
+               'surname': 'Dee'
+            }
+        }
+    ]
+
