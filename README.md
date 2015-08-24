@@ -21,10 +21,8 @@ De/Serialization object from/to JSON string, similar as json_encode()/json_decod
     	}
     	return $encoder->makeDefinition('Foo.Boo.Person', $data);
     });
-
-
     $encoder = Taco\JSON\Encode($map);
-    echo $encoder->encode([42, 3.15, 'Salut', new DateTime()]);
+    $json = $encoder->encode([42, 3.15, 'Salut', new DateTime()]);
 
 
     $decoder = Taco\JSON\Decode([]);
@@ -40,5 +38,5 @@ De/Serialization object from/to JSON string, similar as json_encode()/json_decod
     	return new Foo\Boo\Person($literal->name, $literal->surname);
     });
     $decoder = Taco\JSON\Decode($map);
-    $res = $decoder->decode($string);
+    print_r($decoder->decode($json));
     // [42, 3.15, 'Salut', new DateTime()]
