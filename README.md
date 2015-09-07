@@ -1,6 +1,8 @@
 php-json
 ========
 
+[![Build Status](https://travis-ci.org/tacoberu/php-json.svg?branch=master)](https://travis-ci.org/tacoberu/php-json)
+
 De/Serialization object from/to JSON string, similar as json_encode()/json_decode().
 
 
