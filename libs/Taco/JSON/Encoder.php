@@ -1,19 +1,10 @@
 <?php
 /**
- * This file is part of the Taco Projects.
- *
- * Copyright (c) 2004, 2013 Martin Takáč (http://martin.takac.name)
- *
- * For the full copyright and license information, please view
- * the file LICENCE that was distributed with this source code.
- *
- * PHP version 5.3
- *
- * @author     Martin Takáč (martin@takac.name)
+ * @copyright 2016 Martin Takáč (http://martin.takac.name)
+ * @license   https://opensource.org/licenses/MIT MIT
  */
 
 namespace Taco\JSON;
-
 
 use RuntimeException,
 	LogicException,
@@ -23,10 +14,14 @@ use RuntimeException,
 
 /**
  * Returns the JSON representation of a value.
+ * @author    Martin Takáč <martin@takac.name>
  */
 class Encoder
 {
 
+	/**
+	 * @var array of Serializer
+	 */
 	private $serializer = [];
 
 
@@ -35,12 +30,12 @@ class Encoder
 	 */
 	function __construct($dict)
 	{
-		if (!is_array($dict) && ! $dict instanceof ArrayAccess) {
+		if ( ! is_array($dict) && ! $dict instanceof ArrayAccess) {
 			throw new LogicException("Serializer dict must by array or ArrayAccess.");
 		}
 		$this->serializer[] = $dict;
 		$this->serializer[] = [
-				'stdClass' => new StdClassFormat(),
+				'stdClass' => new StdClassFormat,
 				//~ 'array' => new ArrayFormat(),
 				//~ 'scalar' => new ScalarFormat(),
 				];
@@ -53,7 +48,7 @@ class Encoder
 	 */
 	function add($dict)
 	{
-		if (!is_array($dict) && ! $dict instanceof ArrayAccess) {
+		if ( ! is_array($dict) && ! $dict instanceof ArrayAccess) {
 			throw new LogicException("Serializer dict must by array or ArrayAccess.");
 		}
 		$default = array_pop($this->serializer);
@@ -129,11 +124,11 @@ class Encoder
 			}
 		}
 
-		if (! isset($serializer)) {
+		if ( ! isset($serializer)) {
 			throw new RuntimeException("Serializer for type: `$type' is not found.");
 		}
 
-		if (! $serializer instanceof Serializer) {
+		if ( ! $serializer instanceof Serializer) {
 			throw new LogicException("Serializer for type: `$type' is not implemented of interface Serializer.");
 		}
 

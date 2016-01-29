@@ -18,6 +18,9 @@ namespace Taco\JSON;
 use ArrayAccess;
 
 
+/**
+ * @codeCoverageIgnore
+ */
 class SampleBankByArrayAccess implements ArrayAccess
 {
 	private $container = [];
@@ -43,4 +46,3 @@ class SampleBankByArrayAccess implements ArrayAccess
 		return isset($this->container[$offset]) ? $this->container[$offset] : null;
 	}
 }
-

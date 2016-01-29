@@ -1,15 +1,7 @@
 <?php
 /**
- * This file is part of the Taco Projects.
- *
- * Copyright (c) 2004, 2013 Martin Takáč (http://martin.takac.name)
- *
- * For the full copyright and license information, please view
- * the file LICENCE that was distributed with this source code.
- *
- * PHP version 5.3
- *
- * @author     Martin Takáč (martin@takac.name)
+ * @copyright 2016 Martin Takáč (http://martin.takac.name)
+ * @license   https://opensource.org/licenses/MIT MIT
  */
 
 namespace Taco\JSON;
@@ -17,22 +9,32 @@ namespace Taco\JSON;
 
 /**
  * Format by callback.
+ * @author    Martin Takáč <martin@takac.name>
  */
 class AdhocFormat implements Serializer, Deserializer
 {
 
-	private $encode, $decode;
+	/**
+	 * @var callback
+	 */
+	private $encode;
+
+	/**
+	 * @var callback
+	 */
+	private $decode;
 
 
 	/**
 	 * @param callback
 	 * @param callback
 	 */
-	function __construct($encode = Null, $decode = Null)
+	function __construct($encode = NULL, $decode = NULL)
 	{
 		$this->encode = $encode;
 		$this->decode = $decode;
 	}
+
 
 
 	/**

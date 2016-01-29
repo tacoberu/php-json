@@ -17,6 +17,7 @@ namespace Taco\JSON;
 
 /**
  * Sample object
+ * @codeCoverageIgnore
  */
 class Person
 {
@@ -28,4 +29,3 @@ class Person
 		$this->age = $age;
 	}
 }
-

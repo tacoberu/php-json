@@ -1,19 +1,10 @@
 <?php
 /**
- * This file is part of the Taco Projects.
- *
- * Copyright (c) 2004, 2013 Martin Takáč (http://martin.takac.name)
- *
- * For the full copyright and license information, please view
- * the file LICENCE that was distributed with this source code.
- *
- * PHP version 5.3
- *
- * @author     Martin Takáč (martin@takac.name)
+ * @copyright 2016 Martin Takáč (http://martin.takac.name)
+ * @license   https://opensource.org/licenses/MIT MIT
  */
 
 namespace Taco\JSON;
-
 
 use RuntimeException,
 	LogicException,
@@ -22,24 +13,29 @@ use RuntimeException,
 
 /**
  * Takes a JSON encoded string and converts it into a PHP variable.
+ * @author    Martin Takáč <martin@takac.name>
  */
 class Decoder
 {
 
+	/**
+	 * @var array of Deserializer
+	 */
 	private $deserializer = [];
 
 
 	/**
-	 * @param $dict List of Deserializer by key as type name if format ns.ns.ns.class.
+	 * @param array $dict List of Deserializer by key as type name if format ns.ns.ns.class.
 	 */
 	function __construct($dict)
 	{
-		if (!is_array($dict) && ! $dict instanceof ArrayAccess) {
+		$a =   4;
+		if ( ! is_array($dict) && ! $dict instanceof ArrayAccess) {
 			throw new LogicException("Serializer dict must by array or ArrayAccess.");
 		}
 		$this->deserializer[] = $dict;
 		$this->deserializer[] = [
-				'stdClass' => new StdClassFormat(),
+				'stdClass' => new StdClassFormat,
 				//~ 'array' => new ArrayFormat(),
 				//~ 'scalar' => new ScalarFormat(),
 				];
@@ -52,7 +48,7 @@ class Decoder
 	 */
 	function add($dict)
 	{
-		if (!is_array($dict) && ! $dict instanceof ArrayAccess) {
+		if ( ! is_array($dict) && ! $dict instanceof ArrayAccess) {
 			throw new LogicException("Serializer dict must by array or ArrayAccess.");
 		}
 		$default = array_pop($this->deserializer);
@@ -73,7 +69,7 @@ class Decoder
 	 */
 	function decode($value, $depth = 512, $options = 0)
 	{
-		return $this->fromLiteral(json_decode($value, False, $depth, $options));
+		return $this->fromLiteral(json_decode($value, FALSE, $depth, $options));
 	}
 
 
@@ -95,11 +91,13 @@ class Decoder
 				return $this->lookupDeserializerFor('stdClass')->decode($this, $value);
 			}
 		}
+
 		if (is_array($value)) {
 			foreach ($value as $k => $val) {
 				$value[$k] = $this->fromLiteral($val);
 			}
 		}
+
 		return $value;
 	}
 
@@ -118,21 +116,26 @@ class Decoder
 			}
 		}
 
-		if (! isset($deserializer)) {
+		if ( ! isset($deserializer)) {
 			throw new RuntimeException("Deserializer for type: `$type' is not found.");
 		}
 
-		if (! $deserializer instanceof Deserializer) {
+		if ( ! $deserializer instanceof Deserializer) {
 			throw new LogicException("Deserializer for type: `$type' is not implemented of interface Deserializer.");
 		}
+
 		return $deserializer;
 	}
 
 
 
+	/**
+	 * @param $value
+	 * @return bool
+	 */
 	private static function isObjDefinition($value)
 	{
-		return (array_keys((array)$value) == ['#t', '#v']);
+		return (array_keys((array) $value) === ['#t', '#v']);
 	}
 
 
