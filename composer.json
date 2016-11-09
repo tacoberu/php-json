@@ -10,7 +10,8 @@
         "tracy/tracy": "@dev",
         "phpunit/phpunit": "^4",
         "phpunit/php-code-coverage": "^2",
-        "tacoberu/phpcs-coding-standard": "@dev"
+        "tacoberu/phpcs-coding-standard": "@dev",
+        "sstalle/php7cc": "^1.1"
     },
     "repositories": [
 		{	"type": "vcs", "url": "git://github.com/tacoberu/phpcs-coding-standard" }
